@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+set( PROJ_NAME "LaserScanner" )
+project( ${PROJ_NAME} )
+find_package( OpenCV REQUIRED )
+add_executable( ${PROJ_NAME} main.cpp )
+target_link_libraries( ${PROJ_NAME} ${OpenCV_LIBS} )
