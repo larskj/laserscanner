@@ -38,7 +38,7 @@ void extract_laser_from_image( const Mat& input, Mat& output )
 
 	// TODO, We don't really need to clone the input data like this, but it is an easy way for now to ensure output image gets its own image buffer space without overriding input image
 	output = input.clone();
-	output.setTo( Scalar( 255, 255, 255 ) ); // Initialize output image to solid white
+	output.setTo( Scalar( 0, 0, 0 ) ); // Initialize output image to solid color, 0,0,0 is black
 
 	uchar red, green, blue;
 
@@ -59,14 +59,14 @@ void extract_laser_from_image( const Mat& input, Mat& output )
 
 				if ( red >= laser_threshold_static )
 				{
-					set_rgb_values( out_ptr, 255, 0, 0 ); // Set pixel to red for laser found using primary method
+					set_rgb_values( out_ptr, red, green, blue ); // Keep original pixels for laser found using primary method
 					laser_found_in_vertical_scan = 1;
 				}
 				else
 				{
 					if ( red >= laser_threshold_dynamic && ( (2*red > 3*green) && (2*red > 3*blue) ) )
 					{
-						set_rgb_values( out_ptr, 0, 0, 255 ); // Set pixel to blue for laser found using secondary method
+						set_rgb_values( out_ptr, blue, green, red ); // swap red/blue to indicate laser found using secondary method
 						laser_found_in_vertical_scan = 1;
 					}
 				}
