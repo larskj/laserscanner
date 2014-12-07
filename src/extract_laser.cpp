@@ -2,7 +2,7 @@
 
 static const uchar LASER_THRESHOLD                = 230; // Everything at or above this level will always be marked as the laser beam (direct red component level comparison)
 static const uchar LASER_MIN_ACCEPTABLE_THRESHOLD = 180; // Everything below this level will never be marked as being the laser beam
-static const uchar LASER_THRESHOLD_DECREASE_STEP  = 10;  // If in a vertical scan of the image, no laser beam is found, then the threshold will be decreased by this amount and be run again
+static const uchar LASER_THRESHOLD_DECREASE_STEP  = 20;  // If in a vertical scan of the image, no laser beam is found, then the threshold will be decreased by this amount and be run again
                                                          // This dynamic decrease in threshold will continue in the selected step size until laser beam is found in the vertical scan or LASER_MIN_ACCEPTABLE_THRESHOLD reached 
 
 // TODO add a dynamic gui slider to update the above defines to enable on-the-fly manipulation of the output image
@@ -57,14 +57,14 @@ void extract_laser_from_image( const Mat& input, Mat& output )
 
 				get_rgb_values( in_ptr, &red, &green, &blue );
 
-				if ( red >= laser_threshold_static )
+				if ( red >= laser_threshold_static && ( red > green ) && ( red > blue) ) // We only accept it as the laser if the color is more red than green or blue
 				{
 					set_rgb_values( out_ptr, red, green, blue ); // Keep original pixels for laser found using primary method
 					laser_found_in_vertical_scan = 1;
 				}
 				else
 				{
-					if ( red >= laser_threshold_dynamic && ( (2*red > 3*green) && (2*red > 3*blue) ) )
+					if ( red >= laser_threshold_dynamic && ( (2*red > 3*green) && (2*red > 3*blue) ) ) // For secondary search method we only accept the laser if it is significantly more red than green or blue
 					{
 						set_rgb_values( out_ptr, blue, green, red ); // swap red/blue to indicate laser found using secondary method
 						laser_found_in_vertical_scan = 1;
