@@ -82,6 +82,9 @@ int main( int argc, char** argv )
 
 	waitKey( 0 );
 
+	// Uncomment to record input image from stream
+// 	imwrite( "pics/pic9.jpg", input_image );
+
 	imwrite( output_name, output_image );
 
 	printf( "All tasks done!\n" );
